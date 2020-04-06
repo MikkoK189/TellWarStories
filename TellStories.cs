@@ -68,8 +68,6 @@ namespace TellWarStories
         private void OnSessionLaunched(CampaignGameStarter obj)
         {
             obj.AddGameMenuOption("village", "village_tellstories", "Tell war stories", game_menu_tellstories_here_on_condition, this.game_menu_tellstories_village_on_consequence, false, 3);
-
-
         }
         public class ToldStoriesTo
         {
