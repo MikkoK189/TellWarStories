@@ -1,0 +1,6 @@
+C:\Users\mikko\source\repos\TellWarStories\TellWarStories\obj\Debug\TellWarStories.csprojAssemblyReference.cache
+F:\SteamLibrary\steamapps\common\Mount & Blade II Bannerlord\Modules\TellWarStories\bin\Win64_Shipping_Client\TellWarStories.dll
+F:\SteamLibrary\steamapps\common\Mount & Blade II Bannerlord\Modules\TellWarStories\bin\Win64_Shipping_Client\TellWarStories.pdb
+C:\Users\mikko\source\repos\TellWarStories\TellWarStories\obj\Debug\TellWarStories.csproj.CopyComplete
+C:\Users\mikko\source\repos\TellWarStories\TellWarStories\obj\Debug\TellWarStories.dll
+C:\Users\mikko\source\repos\TellWarStories\TellWarStories\obj\Debug\TellWarStories.pdb
