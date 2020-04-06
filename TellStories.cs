@@ -15,9 +15,11 @@ namespace TellWarStories
     public class TellStories : CampaignBehaviorBase
     {       
         Dictionary<Village, ToldStoriesTo> _villagesToldTo = new Dictionary<Village, ToldStoriesTo>();
+        int _notableBattlesWon = 0;
         public override void RegisterEvents()
         {
             CampaignEvents.OnSessionLaunchedEvent.AddNonSerializedListener(this, new Action<CampaignGameStarter>(this.OnSessionLaunched));
+            CampaignEvents.MapEventEnded.AddNonSerializedListener(this, new Action<MapEvent>(OnMapEvent));
         }
 
         private void game_menu_tellstories_village_on_consequence(MenuCallbackArgs args)
@@ -44,14 +46,52 @@ namespace TellWarStories
             }
         }
 
+        private void OnMapEvent(MapEvent obj)
+        {
+            switch (obj.BattleState)
+            {
+                case BattleState.None:
+                    break;
+                case BattleState.DefenderVictory:
+                case BattleState.AttackerVictory:
+                    var winnerSide = obj.BattleState == BattleState.AttackerVictory ? obj.AttackerSide : obj.DefenderSide;
+                    var winnerParties = winnerSide.PartiesOnThisSide;
+                    int enemyAmountWonAgainst = obj.BattleState == BattleState.AttackerVictory ? obj.DefenderSide.Casualties : obj.AttackerSide.Casualties;
+                    foreach (var VARIABLE in winnerParties)
+                    {
+                        if (VARIABLE.Owner == null) continue;
+                        if (VARIABLE.Owner == Hero.MainHero)
+                        {                         
+                            if(enemyAmountWonAgainst >= 15)
+                            {
+                                InformationManager.DisplayMessage(new InformationMessage("You have gained a story about a notable battle"));
+                                _notableBattlesWon++;
+                            }                           
+                        }
+                    }
+                    break;
+                case BattleState.Dispersed:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
         private void DoTellStories(ToldStoriesTo village)
         {
-            float _renownToGive = CalculateRenownToGive();
-            Hero.MainHero.Clan.AddRenown(_renownToGive, true);
-            InformationManager.DisplayMessage(new InformationMessage("You told villagers war stories, gained " + _renownToGive + " renown."));
-            village._daysToResetStories = CampaignTime.DaysFromNow(1f);
-            village._hasToldStories = true;
+            if (village._battleStoriesTold < _notableBattlesWon)
+            {
+                float _renownToGive = CalculateRenownToGive();
+                Hero.MainHero.Clan.AddRenown(_renownToGive, true);
+                InformationManager.DisplayMessage(new InformationMessage("You told the villagers a story about a notable battle, gained " + _renownToGive + " renown."));
+                village._daysToResetStories = CampaignTime.DaysFromNow(1f);
+                village._hasToldStories = true;
+                village._battleStoriesTold++;
+            }
+            else
+            {
+                InformationManager.DisplayMessage(new InformationMessage("You do not have new stories to tell to these villagers."));
+            }
         }
 
         private float CalculateRenownToGive()
@@ -75,6 +115,8 @@ namespace TellWarStories
             public bool _hasToldStories = false;
             [SaveableField(2)]
             public CampaignTime _daysToResetStories = CampaignTime.Now;
+            [SaveableField(3)]
+            public int _battleStoriesTold = 0;
 
         }
         public class TellWarStoriesSaveDefiner : SaveableTypeDefiner
@@ -98,6 +140,7 @@ namespace TellWarStories
             try
             {
                 dataStore.SyncData("_villagesToldTo", ref _villagesToldTo);
+                dataStore.SyncData("_notableBattlesWon", ref _notableBattlesWon);
             }
             catch (NullReferenceException doesntExist)
             {
