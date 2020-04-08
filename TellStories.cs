@@ -61,12 +61,28 @@ namespace TellWarStories
                     {
                         if (VARIABLE.Owner == null) continue;
                         if (VARIABLE.Owner == Hero.MainHero)
-                        {                         
-                            if(enemyAmountWonAgainst >= 15)
+                        {
+                            if (Hero.MainHero.Clan.Tier >= 0 && Hero.MainHero.Clan.Tier < 2)
                             {
-                                InformationManager.DisplayMessage(new InformationMessage("You have gained a story about a notable battle"));
-                                _notableBattlesWon++;
-                            }                           
+                                if (enemyAmountWonAgainst >= 15)
+                                {
+                                    GainAStory();
+                                }
+                            }
+                            else if (Hero.MainHero.Clan.Tier >= 1 && Hero.MainHero.Clan.Tier < 3)
+                            {
+                                if (enemyAmountWonAgainst >= 40)
+                                {
+                                    GainAStory();
+                                }
+                            }
+                            else if (Hero.MainHero.Clan.Tier >= 2)
+                            {
+                                if (enemyAmountWonAgainst >= 100)
+                                {
+                                    GainAStory();
+                                }
+                            }
                         }
                     }
                     break;
@@ -77,16 +93,35 @@ namespace TellWarStories
             }
         }
 
+        private void GainAStory()
+        {
+            InformationManager.DisplayMessage(new InformationMessage("You have gained a story about a notable battle"));
+            _notableBattlesWon++;
+        }
+
         private void DoTellStories(ToldStoriesTo village)
         {
             if (village._battleStoriesTold < _notableBattlesWon)
             {
                 float _renownToGive = CalculateRenownToGive();
-                Hero.MainHero.Clan.AddRenown(_renownToGive, true);
+                //Hero.MainHero.Clan.AddRenown(_renownToGive, true);
+                GainRenownAction.Apply(Hero.MainHero, _renownToGive, true);               
                 InformationManager.DisplayMessage(new InformationMessage("You told the villagers a story about a notable battle, gained " + _renownToGive + " renown."));
-                village._daysToResetStories = CampaignTime.DaysFromNow(1f);
+                village._daysToResetStories = CampaignTime.DaysFromNow(RandomizeDays());
                 village._hasToldStories = true;
                 village._battleStoriesTold++;
+                Hero.MainHero.AddSkillXp(DefaultSkills.Charm, MBRandom.RandomInt(1, 3));
+                if (_renownToGive >= 0.9)
+                {
+                    if(Settlement.CurrentSettlement.Notables.Count >= 1)
+                    {
+                        InformationManager.DisplayMessage(new InformationMessage("Notable people in village were impressed by your feats and like you more."));
+                        foreach (Hero notablePerson in Settlement.CurrentSettlement.Notables)
+                        {
+                            ChangeRelationAction.ApplyPlayerRelation(notablePerson, +1, false, true);
+                        }
+                    }
+                }
             }
             else
             {
@@ -96,11 +131,17 @@ namespace TellWarStories
 
         private float CalculateRenownToGive()
         {
-            Random rnd = new Random();
-            int _rAmount = rnd.Next(1, 10);
+            int _rAmount = MBRandom.RandomInt(1, 10);
             float _givenAmount = _rAmount * 0.1f;
             return _givenAmount;
         }
+
+        private float RandomizeDays()
+        {
+            int _rAmount = MBRandom.RandomInt(1, 4);
+            return _rAmount;
+        }
+
         private bool game_menu_tellstories_here_on_condition(MenuCallbackArgs args)
         {
             return true;

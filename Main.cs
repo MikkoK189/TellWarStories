@@ -31,6 +31,7 @@ namespace TellWarStories
         private void AddBehaviors(CampaignGameStarter gameInitializer)
         {
             gameInitializer.AddBehavior(new TellStories());
+            gameInitializer.AddBehavior(new BuyDrinks());
         }
 
     }

@@ -4,3 +4,5 @@ F:\SteamLibrary\steamapps\common\Mount & Blade II Bannerlord\Modules\TellWarStor
 C:\Users\mikko\source\repos\TellWarStories\TellWarStories\obj\Debug\TellWarStories.csproj.CopyComplete
 C:\Users\mikko\source\repos\TellWarStories\TellWarStories\obj\Debug\TellWarStories.dll
 C:\Users\mikko\source\repos\TellWarStories\TellWarStories\obj\Debug\TellWarStories.pdb
+F:\SteamLibrary\steamapps\common\Mount & Blade II Bannerlord\Modules\AltRenownGains\bin\Win64_Shipping_Client\TellWarStories.dll
+F:\SteamLibrary\steamapps\common\Mount & Blade II Bannerlord\Modules\AltRenownGains\bin\Win64_Shipping_Client\TellWarStories.pdb
