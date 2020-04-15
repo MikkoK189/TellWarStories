@@ -24,14 +24,14 @@ namespace TellWarStories
 
         protected override void OnApplicationTick(float dt)
         {
-            //Console.WriteLine("DO SMTH");
             base.OnApplicationTick(dt);
         }
 
         private void AddBehaviors(CampaignGameStarter gameInitializer)
         {
             gameInitializer.AddBehavior(new TellStories());
-            gameInitializer.AddBehavior(new BuyDrinks());
+            gameInitializer.AddBehavior(new BuyDrinks());          
+            
         }
 
     }

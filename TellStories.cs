@@ -89,7 +89,7 @@ namespace TellWarStories
                 case BattleState.Dispersed:
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    break;
             }
         }
 
@@ -104,7 +104,6 @@ namespace TellWarStories
             if (village._battleStoriesTold < _notableBattlesWon)
             {
                 float _renownToGive = CalculateRenownToGive();
-                //Hero.MainHero.Clan.AddRenown(_renownToGive, true);
                 GainRenownAction.Apply(Hero.MainHero, _renownToGive, true);               
                 InformationManager.DisplayMessage(new InformationMessage("You told the villagers a story about a notable battle, gained " + _renownToGive + " renown."));
                 village._daysToResetStories = CampaignTime.DaysFromNow(RandomizeDays());
